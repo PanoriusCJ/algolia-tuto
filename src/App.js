@@ -9,6 +9,7 @@ import {
   CurrentRefinements,
   RefinementList,
   Configure,
+  connectAutoComplete,
 } from 'react-instantsearch-dom';
 import PropTypes from 'prop-types';
 import './App.css';
@@ -19,6 +20,23 @@ const searchClient = algoliasearch(
   'NUY0SFG8TT',
   'f48ef2b671d34701751932b3236ad4c2'
 );
+
+const Autocomplete = ({ hits, currentRefinement, refine }) => (
+  <ul>
+    <li>
+      <input
+        type="search"
+        value={currentRefinement}
+        onChange={event => refine(event.currentTarget.value)}
+      />
+    </li>
+    {hits.map(hit => (
+      <li key={hit.objectID}>{hit.brand}</li>
+    ))}
+  </ul>
+);
+
+const CustomAutocomplete = connectAutoComplete(Autocomplete);
 
 function App() {
   return (
@@ -67,11 +85,7 @@ function App() {
                   placeholder: 'Recherche ta voiture weshh',
                 }}
               />
-              <Suggestions />
-              <Configure
-                restrictSearchableAttributes={['brand', 'model']}
-                distinct
-              />
+              <CustomAutocomplete />
               <Hits hitComponent={Hit} />
 
               <div className="pagination">
@@ -84,23 +98,6 @@ function App() {
     </div>
   );
 }
-
-const Autocomplete = ({ hits, currentRefinement, refine }) => (
-  <ul>
-    <li>
-      <input
-        type="search"
-        value={currentRefinement}
-        onChange={event => refine(event.currentTarget.value)}
-      />
-    </li>
-    {hits.map(hit => (
-      <li key={hit.objectID}>{hit.name}</li>
-    ))}
-  </ul>
-);
-
-const CustomAutocomplete = connectAutoComplete(Autocomplete);
 
 function Hit(props) {
   return (
