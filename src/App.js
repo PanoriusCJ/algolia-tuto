@@ -204,7 +204,7 @@ function App() {
         />
         <CurrentRefinements />
         <ClearRefinements />
-        <Configure restrictSearchableAttributes={['brand', 'model']}/>
+        <Configure restrictSearchableAttributes={['brand', 'model']} />
         <VirtualSearchBox defaultRefinement={query} />
         <Hits hitComponent={Hit} />
       </InstantSearch>
@@ -213,21 +213,35 @@ function App() {
 }
 
 function Hit(props) {
+  console.log(props.hit.pictures);
+  const bg =
+    props.hit.pictures.length > 0
+      ? `https://public.carjager.com/512x288/${props.hit.pictures[0].path}`
+      : `https://test.carjager.com/build/images/placeholder-cars-blur.1daa7f7a.jpg`;
   return (
-    <article>
-      <p>
-        <code>{`${props.hit.brand} ${props.hit.model}`}</code>
-      </p>
-      <p>
-        <code>
-          {props.hit.comments
-            ? props.hit.comments.length > 50
-              ? `${props.hit.comments.slice(0, 50)}...`
-              : props.hit.comments
-            : 'no comments'}
-        </code>
-      </p>
-    </article>
+    <div className="container">
+      <img
+        src={bg}
+        style={{
+          height: '288px',
+          width: '200px',
+        }}
+      />
+      <article>
+        <p>
+          <code>{`${props.hit.brand} ${props.hit.model}`}</code>
+        </p>
+        <p>
+          <code>
+            {props.hit.comments
+              ? props.hit.comments.length > 50
+                ? `${props.hit.comments.slice(0, 50)}...`
+                : props.hit.comments
+              : 'no comments'}
+          </code>
+        </p>
+      </article>
+    </div>
   );
 }
 
