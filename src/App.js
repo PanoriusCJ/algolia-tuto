@@ -157,9 +157,6 @@ function App() {
   const [query, setQuery] = useState('');
 
   const onSuggestionSelected = (e, { suggestion }) => {
-    if (e.key === 'Enter') {
-      const path = `/posts/${suggestion.objectID}`;
-    }
     setQuery(`${suggestion.brand} ${suggestion.model}`);
   };
 
