@@ -15,7 +15,7 @@ import { autocomplete } from '@algolia/autocomplete-js';
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
 import algoliasearch from 'algoliasearch';
 import Autocomplete from './Autocomplete.jsx';*/
-import React, { Component } from 'react';
+/* import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import algoliasearch from 'algoliasearch/lite';
 import {
@@ -28,163 +28,21 @@ import {
   ClearRefinements,
   CurrentRefinements,
   RefinementList,
+  SearchBox,
 } from 'react-instantsearch-dom';
 import orderBy from 'lodash/orderBy';
 import Autocomplete from './Autocomplete';
 import './App.css';
 
-const VirtalSearchBox = connectSearchBox(() => null);
-
-const searchClient = algoliasearch(
-  'NUY0SFG8TT',
-  'f48ef2b671d34701751932b3236ad4c2'
-);
-
-/* const querySuggestionsPlugin = createQuerySuggestionsPlugin({
-  searchClient,
-  indexName: 'test_carjager',
-  getSearchParams({ state }) {
-    return { hitsPerPage: state.query ? 5 : 10 };
-  },
-});
-
-const onSuggestionSelected = (_, { suggestion }) => {
-  const [
-    category,
-  ] = suggestion.instant_search.facets.exact_matches.categories;
-
-  this.setState({
-    query: suggestion.query,
-    categories:
-      category && category.value !== 'ALL_CATEGORIES' ? [category.value] : [],
-  });
-};
-
-const onSuggestionCleared = () => {
-  this.setState({
-    query: '',
-    categories: [],
-  });
-};
-
-function App() {
-  return (
-    <div>
-      <header className="header">
-        <h1 className="header-title">
-          <a href="/">Test Algolia</a>
-        </h1>
-      </header>
-
-      <div className="container">
-        <InstantSearch
-          searchClient={searchClient}
-          refresh={false}
-          indexName="test_carjager"
-        >
-          <div id="test"></div>
-          <h1>Brand</h1>
-          <RefinementList
-            attribute="brand"
-            facetOrdering={false}
-            operator="or"
-            transformItems={items =>
-              orderBy(items, ['label', 'count'], ['asc', 'desc'])
-            }
-            showMore
-          />
-          <h1>Model</h1>
-          <RefinementList
-            attribute="model"
-            facetOrdering={false}
-            operator="or"
-            transformItems={items =>
-              orderBy(items, ['label', 'count'], ['asc', 'desc'])
-            }
-            showMore
-          />
-          {/!* On peut filtrer dans transformItems -> ne pas afficher le filtre === brand *!/}
-          <CurrentRefinements />
-          <ClearRefinements />
-          <div className="search-panel">
-            <div className="search-panel__results">
-              <SearchBox
-                id="test"
-                searchAsYouType={false}
-                className="searchbox"
-                translations={{
-                  placeholder: 'Recherche ta voiture weshh',
-                }}
-              />
-              <Hits hitComponent={Hit} />
-
-              <div className="pagination">
-                <Pagination />
-              </div>
-            </div>
-          </div>
-        </InstantSearch>
-      </div>
-    </div>
-  );
-}
-
-function Hit(props) {
-  return (
-    <article>
-      <p>
-        <code>{`${props.hit.brand} ${props.hit.model}`}</code>
-      </p>
-      <p>
-        <code>
-          {props.hit.comments.length > 50
-            ? `${props.hit.comments.slice(0, 50)}...`
-            : props.hit.comments}
-        </code>
-      </p>
-    </article>
-  );
-}
-
-window.addEventListener('load', function() {
-  autocomplete({
-    container: '#test',
-    plugins: [querySuggestionsPlugin],
-    openOnFocus: true,
-  });
-});
-
-
-Hit.propTypes = {
-  hit: PropTypes.object.isRequired,
-};
-
-export default App;*/
-
-class App extends Component {
+/* TODO NOT TODO - FONCTIONNE PAS LORS SUR SELECT DANS AUTOCOMPLETE */
+/* class App extends Component {
   state = {
     searchState: {
-      query: this.props.query || "",
-      refinementList: this.props.refinementList,
-      range: this.props.range,
-      page: 1,
+      query: this.props.query || '',
     },
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps !== this.props) {
-      this.setState({
-        searchState: {
-          query: this.props.query || "",
-          refinementList: this.props.refinementList,
-          range: this.props.range,
-          page: 1,
-        },
-      });
-    }
-  }
-
-  handleSearchStateChange = (searchState) => {
+  handleSearchStateChange = searchState => {
     console.log(searchState);
     this.setState({
       searchState,
@@ -193,25 +51,32 @@ class App extends Component {
   onSuggestionSelected = (_, { suggestion }) => {
     const { searchState } = this.state;
     console.log(searchState);
-    const newSearch = (searchState.query = `${suggestion.brand} ${suggestion.model}`);
-    console.log("lol", newSearch);
+    console.log(suggestion);
     this.setState({
-      newSearch,
+      searchState: {
+        ...searchState,
+        query: `${suggestion.brand}${suggestion.model}`,
+      },
     });
   };
 
   onSuggestionCleared = () => {
+    const { searchState } = this.state;
+    console.log(searchState);
     this.setState({
-      query: '',
+      searchState: {
+        ...searchState,
+        query: '',
+      },
     });
   };
 
   render() {
     const { query } = this.state.searchState;
-    console.log("test", query);
+    console.log('test', query);
     return (
       <div className="container">
-        <h1>React InstantSearch - Results page with autocomplete</h1>
+        <h1>Algo Test CJ</h1>
         <InstantSearch
           indexName="test_carjager"
           searchClient={searchClient}
@@ -241,7 +106,11 @@ class App extends Component {
           <CurrentRefinements />
           <ClearRefinements />
           <div className="search-panel">
-            <Configure hitsPerPage={5} distinct />
+            <Configure
+              restrictSearchableAttributes={['brand', 'model']}
+              hitsPerPage={5}
+              distinct
+            />
             <Autocomplete
               onSuggestionSelected={this.onSuggestionSelected}
               onSuggestionCleared={this.onSuggestionCleared}
@@ -258,6 +127,89 @@ class App extends Component {
       </div>
     );
   }
+}*/
+
+/* TODO NOT TODO - FONCTIONNE TRES BIEN */
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import algoliasearch from 'algoliasearch/lite';
+import orderBy from 'lodash/orderBy';
+import {
+  InstantSearch,
+  Configure,
+  Hits,
+  connectSearchBox,
+  ClearRefinements,
+  CurrentRefinements,
+  RefinementList,
+} from 'react-instantsearch-dom';
+
+import Autocomplete from './Autocomplete.jsx';
+import './App.css';
+
+const VirtualSearchBox = connectSearchBox(() => null);
+function App() {
+  const searchClient = algoliasearch(
+    'NUY0SFG8TT',
+    'f48ef2b671d34701751932b3236ad4c2'
+  );
+
+  const [query, setQuery] = useState('');
+
+  const onSuggestionSelected = (e, { suggestion }) => {
+    if (e.key === 'Enter') {
+      const path = `/posts/${suggestion.objectID}`;
+    }
+    setQuery(`${suggestion.brand} ${suggestion.model}`);
+  };
+
+  const onSuggestionCleared = () => {
+    setQuery('');
+  };
+
+  return (
+    <div className="container">
+      <h1>Test Algolia Carjager</h1>
+      <InstantSearch indexName="test_carjager" searchClient={searchClient}>
+        <Configure
+          hitsPerPage={5}
+          restrictSearchableAttributes={['brand', 'model']}
+        />
+        <Autocomplete
+          onSuggestionSelected={onSuggestionSelected}
+          onSuggestionCleared={onSuggestionCleared}
+        />
+      </InstantSearch>
+
+      <InstantSearch indexName="test_carjager" searchClient={searchClient}>
+        <h1>Brand</h1>
+        <RefinementList
+          attribute={'brand'}
+          facetOrdering={false}
+          operator="and"
+          transformItems={items =>
+            orderBy(items, ['label', 'count'], ['asc', 'desc'])
+          }
+          showMore
+        />
+        <h1>Model</h1>
+        <RefinementList
+          attribute="model"
+          facetOrdering={false}
+          operator="and"
+          transformItems={items =>
+            orderBy(items, ['label', 'count'], ['asc', 'desc'])
+          }
+          showMore
+        />
+        <CurrentRefinements />
+        <ClearRefinements />
+        <Configure restrictSearchableAttributes={['brand', 'model']}/>
+        <VirtualSearchBox defaultRefinement={query} />
+        <Hits hitComponent={Hit} />
+      </InstantSearch>
+    </div>
+  );
 }
 
 function Hit(props) {
